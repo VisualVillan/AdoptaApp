@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h3 class="mb-4 text-primary">
+        <i class="fa-solid fa-plus me-2"></i>Crear Nuevo Tipo de Mascota
+      </h3>
+
+      <form method="POST" action="{% url 'app1:crearTipo' %}">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+
+        <div class="mb-3">
+          {{ form.nombre.label_tag }}
+          {{ form.nombre }}
+          {% if form.nombre.errors %}
+            <div class="alert alert-danger">
+              {{ form.nombre.errors }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.descripcion.label_tag }}
+          {{ form.descripcion }}
+          {% if form.descripcion.errors %}
+            <div class="alert alert-danger">
+              {{ form.descripcion.errors }}
+            </div>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-check me-1"></i> Guardar
+        </button>
+
+
+        <a href="{% url 'app1:home' %}" class="btn btn-secondary">
+          <i class="fa-solid fa-arrow-left me-1"></i> Cancelar
+        </a>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Adopta Mascotas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+        rel="stylesheet" 
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" 
+        crossorigin="anonymous">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" 
+        integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer" />
+</head>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="{% url 'app1:home' %}">
+        <i class="fa-solid fa-paw me-2"></i>Adopta Mascotas
+      </a>
+
+      <div>
+        <a href="{% url 'app1:cerrarSesion' %}" class="btn btn-light">
+          <i class="fa-solid fa-door-open me-1"></i> Cerrar sesión
+        </a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Sidebar -->
+      <aside class="col-md-3 mb-3">
+        <div class="list-group shadow-sm">
+          <a href="{% url 'app1:crearMascota' %}" class="list-group-item list-group-item-action list-group-item-primary fw-bold">
+            <i class="fa-solid fa-plus me-2"></i>Nueva Mascota
+          </a>
+          <a href="{% url 'app1:crearTipo' %}" class="list-group-item list-group-item-action list-group-item-primary fw-bold">
+            <i class="fa-solid fa-plus me-2"></i>Nuevo Tipo
+          </a>
+          <a href="{% url 'app1:listaAdoptantes' %}" class="list-group-item list-group-item-action list-group-item-success fw-bold">
+            <i class="fa-solid fa-users me-2"></i>Lista de Adoptantes
+          </a>
+          <hr class="my-2">
+          <h6 class="px-3 text-muted">Tipos de Mascotas</h6>
+
+          {% for tipo in tipos %}
+            <a href="{% url 'app1:mascotasxtipo' tipo.id %}" class="list-group-item list-group-item-action">
+              <i class="fa-solid fa-paw me-2 text-primary"></i> {{ tipo.nombre }}
+            </a>
+          {% empty %}
+            <p class="px-3 text-muted">No hay tipos aún</p>
+          {% endfor %}
+        </div>
+      </aside>
+
+      <!-- Área de contenido dinámico -->
+      <main class="col-md-9">
+
+        {% block content %}{% endblock %}
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" 
+          crossorigin="anonymous"></script>
+</body>
+</html>
