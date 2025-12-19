@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card shadow-sm border-0 mb-3">
+  <div class="card-body">
+    <h3 class="text-primary mb-2">
+      <i class="fa-solid fa-images me-2"></i>Galería de {{ mascota.nombre }}
+    </h3>
+
+    {% if mascota.foto %}
+      <img src="{{ mascota.foto.url }}" class="img-fluid rounded mb-3" alt="{{ mascota.nombre }}">
+    {% endif %}
+
+    <p class="mb-1"><strong>Tipo:</strong> {{ mascota.tipo.nombre }}</p>
+    <p class="mb-1"><strong>Edad:</strong> {{ mascota.edad }} años</p>
+    <p class="mb-3"><strong>Estado:</strong> {{ mascota.estado }}</p>
+
+    <a href="{% url 'app1:detalleMascota' mascota.id %}" class="btn btn-secondary btn-sm">
+      <i class="fa-solid fa-arrow-left me-1"></i>Volver al detalle
+    </a>
+  </div>
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <h5 class="mb-3 text-primary">
+      <i class="fa-solid fa-plus me-2"></i>Registrar nuevo post
+    </h5>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <div class="mb-3">
+        {{ form.titulo.label_tag }}
+        {{ form.titulo }}
+        {% if form.titulo.errors %}
+          <div class="text-danger small">{{ form.titulo.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.descripcion.label_tag }}
+        {{ form.descripcion }}
+        {% if form.descripcion.errors %}
+          <div class="text-danger small">{{ form.descripcion.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.fecha.label_tag }}
+        {{ form.fecha }}
+        {% if form.fecha.errors %}
+          <div class="text-danger small">{{ form.fecha.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.foto.label_tag }}
+        {{ form.foto }}
+        {% if form.foto.errors %}
+          <div class="text-danger small">{{ form.foto.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button class="btn btn-primary" type="submit">
+        <i class="fa-solid fa-floppy-disk me-1"></i>Guardar
+      </button>
+    </form>
+  </div>
+</div>
+
+
+{% if posts %}
+  <h5 class="mb-3"><i class="fa-solid fa-clock me-2"></i>Posts</h5>
+
+  <div class="row g-3">
+    {% for post in posts %}
+      <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+          {% if post.foto %}
+            <img src="{{ post.foto.url }}" class="card-img-top" alt="{{ post.titulo }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ post.titulo }}</h5>
+            <p class="card-text">{{ post.descripcion }}</p>
+            <p class="small text-muted mb-0"><strong>Fecha:</strong> {{ post.fecha }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    Esta mascota todavía no tiene posts.
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -1,5 +1,7 @@
 from django import forms
-from .models import TipoMascota, Mascota, Persona
+from datetime import date
+from .models import TipoMascota, Mascota, Persona, PostMascota
+
 
 class TipoMascotaForm(forms.ModelForm):
     class Meta:
@@ -39,3 +41,45 @@ class TipoMascotaForm(forms.ModelForm):
             raise forms.ValidationError("El nombre y la descripcion no pueden ser iguales")
         return cleaned
     
+class PostMascotaForm(forms.ModelForm):
+    class Meta:
+        model = PostMascota
+        fields = ['titulo', 'descripcion', 'fecha', 'foto']
+
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej. Primer paseo'
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Describe el momento (mínimo 20 caracteres)',
+                'rows': 4
+            }),
+            'fecha': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'foto': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+        labels = {
+            'titulo': 'Título',
+            'descripcion': 'Descripción',
+            'fecha': 'Fecha',
+            'foto': 'Foto',
+        }
+
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion', '')
+        if len(descripcion.strip()) < 20:
+            raise forms.ValidationError("La descripción debe tener al menos 20 caracteres.")
+        return descripcion
+
+    def clean_fecha(self):
+        f = self.cleaned_data.get('fecha')
+        if f and f > date.today():
+            raise forms.ValidationError("La fecha no puede ser mayor a la actual.")
+        return f

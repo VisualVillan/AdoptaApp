@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import *
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, FileResponse
 from django.urls import reverse
@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .forms import TipoMascotaForm
+from .forms import TipoMascotaForm, PostMascotaForm
+
 
 # Create your views here.
 def ingreso(request):
@@ -175,3 +176,28 @@ def listaAdoptantes(request):
 def cerrarSesion(request):
     logout(request)
     return HttpResponseRedirect(reverse('app1:ingreso'))
+
+@login_required(login_url='/')
+def posts_mascota(request, mascota_id):
+    # Vista para ver y registrar posts (galería) de una mascota
+    tipos = TipoMascota.objects.all()
+    mascota = get_object_or_404(Mascota, id=mascota_id)
+
+    posts = PostMascota.objects.filter(mascota=mascota).order_by('-fecha', '-id')
+
+    if request.method == 'POST':
+        form = PostMascotaForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.mascota = mascota
+            post.save()
+            return HttpResponseRedirect(reverse('app1:posts_mascota', args=[mascota.id]))
+    else:
+        form = PostMascotaForm()
+
+    return render(request, 'posts_mascota.html', {
+        'tipos': tipos,
+        'mascota': mascota,
+        'form': form,
+        'posts': posts
+    })
